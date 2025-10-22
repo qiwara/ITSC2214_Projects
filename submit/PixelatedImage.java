@@ -14,12 +14,18 @@ public class PixelatedImage {
    private boolean visited[][];
 
    /**
-    * Initializes image with the color corresponding to the number.
-    * @param s color to be used for the initial grid
+    * Creates a size x size integer array and initializes it to 0.
+    * @param s size of the initial grid
     */
    public PixelatedImage(int s)
    {
-
+      for (int i=0;i<s;i++)
+      {
+         for (int j=0;j<s;j++)
+         {
+            grid[i][j] = 0;
+         }
+      }
    }
 
    /**
@@ -28,7 +34,11 @@ public class PixelatedImage {
     */
    public PixelatedImage(String filename)
    {
-
+      try {
+         loadFromFile(filename);
+      } catch (FileNotFoundException e) {
+         System.out.println("File not found.");
+      }
    }
 
    /**
@@ -40,7 +50,7 @@ public class PixelatedImage {
    }
 
    /**
-    * Loads grid from a file.
+    * Loads a csv file into the internal grid representation.
     * @param inFile file to be loaded from
     * @throws FileNotFoundException if file is not found
     */
@@ -68,7 +78,7 @@ public class PixelatedImage {
     */
    public int getWidth()
    {
-      return 0;
+      return grid[0].length;
    }
 
    /**
@@ -77,29 +87,30 @@ public class PixelatedImage {
     */
    public int getHeight()
    {
-      return 0;
+      return grid.length;
    }
 
    /**
-    * Gets position of a pixel.
+    * Returns the color value stored at row and col.
     * @param row row of target pixel
     * @param col column of target pixel
-    * @return position of target pixel
+    * @return color of the pixel at position (row,col)
     */
    public int getPixel(int row, int col)
    {
-      return 0;
+      return grid[row][col];
    }
 
    /**
-    * Sets the color of a pixel.
+    * Stores the color value at position (row, col). 
     * @param row row of target pixel
     * @param col column of target pixel
-    * @param color color to set for the pixel
+    * @param color color of pixel, expected between 0 and 15
     */
    public void setPixel(int row, int col, int color)
    {
-
+      if ((color >= 0) && (color <= 15))
+         grid[row][col] = color;
    }
 
    /**
@@ -120,11 +131,14 @@ public class PixelatedImage {
    }
 
    /**
-    * 
-    * @param row
-    * @param col
+    * recursion of checking  row,col and if the color 
+    * stored there is origColor, then replace it and 
+    * recursively call it with the four adjacent neighbors.
+    
+    * @param row row of the grid to visit
+    * @param col col of the grid to visit
     * @param origColor color to be replaced
-    * @param fillColor color to replace with
+    * @param fillColor color to use for replacing
     */
    protected void floodFill(int row, int col, int origColor, int fillColor)
    {
