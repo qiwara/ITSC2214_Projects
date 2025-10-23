@@ -19,9 +19,11 @@ public class PixelatedImage {
     */
    public PixelatedImage(int s)
    {
-      for (int i=0;i<s;i++)
+      size = s;
+      grid = new int[size][size];
+      for (int i=0;i<size;i++)
       {
-         for (int j=0;j<s;j++)
+         for (int j=0;j<size;j++)
          {
             grid[i][j] = 0;
          }
@@ -46,7 +48,19 @@ public class PixelatedImage {
     */
    public void loadRandomly()
    {
+      Random rand = new Random();
+      if (grid == null) 
+      {
+        grid = new int[size][size];
+      }
 
+      for (int i = 0; i < getHeight(); i++) 
+      {
+        for (int j = 0; j < getWidth(); j++) 
+        {
+            grid[i][j] = rand.nextInt(16);
+        }
+    }
    }
 
    /**
@@ -131,7 +145,7 @@ public class PixelatedImage {
    }
 
    /**
-    * recursion of checking  row,col and if the color 
+    * Recursion of checking (row,col) and if the color 
     * stored there is origColor, then replace it and 
     * recursively call it with the four adjacent neighbors.
     
@@ -142,7 +156,27 @@ public class PixelatedImage {
     */
    protected void floodFill(int row, int col, int origColor, int fillColor)
    {
+      // Base case
+      if (row < 0 || row >= getHeight() || col < 0 || col >= getWidth())
+        return;
 
+      // Already visited
+      if (visited[row][col])
+         return;
+
+      // Fill if the current color = original
+      if (grid[row][col] != origColor)
+        return;
+
+      // Fill the pixel and mark as visited
+      grid[row][col] = fillColor;
+      visited[row][col] = true;
+
+      // Recursive case: call floodFill, down up right left
+      floodFill(row + 1, col, origColor, fillColor);
+      floodFill(row - 1, col, origColor, fillColor);
+      floodFill(row, col + 1, origColor, fillColor);
+      floodFill(row, col - 1, origColor, fillColor);
    }
 
 }
